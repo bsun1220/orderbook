@@ -2,6 +2,8 @@
 #include "PriceLevel.hpp"
 #include <unordered_map>
 #include <iostream>
+#include <math.h>
+#include <iomanip>
 
 class OrderBook{
     public:
@@ -14,35 +16,10 @@ class OrderBook{
         verbose = act_verbose;
     }
 
-    void add_order(long uid, bool side, double price, long size){
-        if (order_map.count(uid) > 0){
-            if (verbose) std::cout << "uid at " << uid << " already taken\n";
-            return 1;
-        }
-
-        if (price < 0){
-            if (verbose) std::cout << "error: invalid price at " << price << "\n";
-            return 1; 
-        }
-
-        if (size < 0){
-            if (verbose) std :: "error: invalid size at " << size <<"\n";
-            return 1; 
-        }
-
-        Order order(uid, price, side, size);
-        order_map[uid] = order; 
-
-        if (side){
-            if (asks.size() == 0){
-                
-            }
-
-        } else {
-
-        }
-
-    }
-
+    void add_order(long uid, bool side, double price, long size);
+    void update_order(long uid, long size);
+    void delete_order(long uid);
+    void print_book();
+    void match();
 
 };
