@@ -16,10 +16,11 @@ class OrderBook{
         verbose = act_verbose;
     }
 
-    void add_order(long uid, bool side, double price, long size);
-    void update_order(long uid, long size);
-    void delete_order(long uid);
-    void print_book();
-    void match();
+    void addOrder(long uid, bool side, double price, long size);
+    void updateOrder(long uid, long size);
+    void deleteOrder(long uid);
+    void printBook();
+    void match(bool side, long uid);
+    double getMidpoint();
 
 };

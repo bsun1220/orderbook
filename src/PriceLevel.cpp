@@ -1,12 +1,12 @@
 #include "PriceLevel.hpp"
 
 
-void PriceLevel::add_id(long amount, long id){
+void PriceLevel::addId(long amount, long id){
         orderids.push_back(id);
         volume += amount; 
 }
 
-void PriceLevel::adjust_id(long adj, long id, bool put_back){
+void PriceLevel::adjustId(long adj, long id, bool put_back){
         int i = 0; 
         while (orderids[i] != id){
             i++; 
@@ -17,6 +17,6 @@ void PriceLevel::adjust_id(long adj, long id, bool put_back){
         volume += adj;
 }
 
-std::vector<long> PriceLevel::get_ids(){
+std::vector<long> PriceLevel::getIds(){
         return orderids; 
  }

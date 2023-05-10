@@ -15,6 +15,6 @@ class Order{
         volume = act_volume;
     }
 
-    void update_quantity(long act_volume);
+    void updateQuantity(long act_volume);
     
 };

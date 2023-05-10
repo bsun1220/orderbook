@@ -11,8 +11,8 @@ class PriceLevel {
         price = act_price; 
     }
 
-    void add_id(long amount, long id);
-    void adjust_id(long adj, long id, bool put_back);
-    std::vector<long> get_ids();
+    void addId(long amount, long id);
+    void adjustId(long adj, long id, bool put_back);
+    std::vector<long> getIds();
 
 };
