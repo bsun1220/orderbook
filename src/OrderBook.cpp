@@ -263,37 +263,27 @@ void OrderBook::match(bool side, long uid){
         
         while (order_map.count(uid) > 0 && asks.size() > 0){
 
-
             if (asks[0].price > order_map[uid].price) break; 
 
-            bool no_vol = false; 
-            int asks_orders_size = asks[0].orderids.size();
-            for (int i = 0; i < asks_orders_size; i++){
-                Order ask_order = order_map[asks[0].orderids[i]];
-                long volume_traded = std::min(order_map[uid].volume, order_map[asks[0].orderids[i]].volume);
+            long volume_traded = std::min(order_map[uid].volume, order_map[asks[0].orderids[0]].volume);
+            order_map[uid].volume -= volume_traded;
+            bids[0].volume -= volume_traded;
+            order_map[asks[0].orderids[0]].volume -= volume_traded;
+            asks[0].volume -= volume_traded;
 
-                order_map[uid].volume -= volume_traded;
-                bids[0].volume -= volume_traded;
-                order_map[asks[0].orderids[i]].volume -= volume_traded;
-                asks[0].volume -= volume_traded;
+            if (verbose){
+                double traded_price = (bids[0].price + asks[0].price)/2;
+                std::cout << uid << " bought from " << order_map[asks[0].orderids[0]].uid << " for " << volume_traded << " @ " << traded_price << "\n";
+            }
 
-                if (verbose){
-                    double traded_price = (bids[0].price + asks[0].price)/2;
-                    std::cout << uid << " bought from " << order_map[asks[0].orderids[i]].uid << " for " << volume_traded << " @ " << traded_price << "\n";
-                }
+            if (order_map[uid].volume == 0){
+                bids.erase(bids.begin());
+                order_map.erase(uid);
+            }
 
-                if (order_map[uid].volume == 0){
-                    bids.erase(bids.begin());
-                    order_map.erase(uid);
-                    no_vol = true; 
-                }
-                if (order_map[asks[0].orderids[i]].volume == 0){
-                    asks[0].orderids.erase(asks[0].orderids.begin());
-                    order_map.erase(order_map[asks[0].orderids[i]].uid);
-                    no_vol = true; 
-                }
-
-                if (no_vol) break;
+            if (order_map[asks[0].orderids[0]].volume == 0){
+                order_map.erase(asks[0].orderids[0]);
+                asks[0].orderids.erase(asks[0].orderids.begin());
             }
 
             if (asks[0].volume == 0){
@@ -301,53 +291,41 @@ void OrderBook::match(bool side, long uid){
             }
         }
 
-
-
     } else {
         if (bids.size() == 0) return;
         if (asks[0].getIds()[0] != uid) return; 
         if (bids[0].price < asks[0].price) return; 
-
-         Order ask_order = order_map[uid];
         
         while (order_map.count(uid) > 0 && bids.size() > 0){
-
-
+           
             if (bids[0].price < order_map[uid].price) break; 
 
-            bool no_vol = false; 
-            int bids_orders_size = bids[0].orderids.size();
-            for (int i = 0; i < bids_orders_size; i++){
-                Order bid_order = order_map[bids[0].orderids[i]];
-                long volume_traded = std::min(order_map[bids[0].orderids[i]].volume, order_map[uid].volume);
+            long volume_traded = std::min(order_map[bids[0].orderids[0]].volume, order_map[uid].volume);
 
-                order_map[bids[0].orderids[i]].volume -= volume_traded;
-                bids[0].volume -= volume_traded;
-                order_map[uid].volume -= volume_traded;
-                asks[0].volume -= volume_traded;
+            order_map[bids[0].orderids[0]].volume -= volume_traded;
+            bids[0].volume -= volume_traded;
+            order_map[uid].volume -= volume_traded;
+            asks[0].volume -= volume_traded;
 
-                if (verbose){
-                    double traded_price = (bids[0].price + asks[0].price)/2;
-                    std::cout << uid << " sold to " << order_map[bids[0].orderids[i]].uid << " for " << volume_traded << " @ " << traded_price << "\n";
-                }
+            if (verbose){
+                double traded_price = (bids[0].price + asks[0].price)/2;
+                std::cout << uid << " sold to " << order_map[bids[0].orderids[0]].uid << " for " << volume_traded << " @ " << traded_price << "\n";
+            }
 
-                if (order_map[uid].volume == 0){
-                    asks.erase(asks.begin());
-                    order_map.erase(uid);
-                    no_vol = true; 
-                }
-                if (order_map[bids[0].orderids[i]].volume == 0){
-                    bids[0].orderids.erase(bids[0].orderids.begin());
-                    order_map.erase(bid_order.uid);
-                    no_vol = true; 
-                }
+            if (order_map[uid].volume == 0){
+                asks.erase(asks.begin());
+                order_map.erase(uid);
+            }
 
-                if (no_vol) break;
+            if (order_map[bids[0].orderids[0]].volume == 0){
+                order_map.erase(bids[0].orderids[0]);
+                bids[0].orderids.erase(bids[0].orderids.begin());
             }
 
             if (bids[0].volume == 0){
                 bids.erase(bids.begin());
             }
+            
         }
     }
 }
