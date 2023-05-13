@@ -12,7 +12,9 @@ def run_txt_reader(file_name):
                 ob = OrderBook(line[0] == '1')
             else:
                 subj = line.split(',')
-                if subj[0] == 'Add':
+                if len(subj) == 0:
+                    print("Error on Line " + str(i))
+                elif subj[0] == 'Add':
                     uid = int(subj[1])
                     side = bool(subj[2])
                     price = float(subj[3])
@@ -28,7 +30,7 @@ def run_txt_reader(file_name):
                 elif subj[0] == 'Print':
                     ob.printBook()
                 else:
-                    print("Error on Line " + str(i + 1))
+                    print("Error on Line " + str(i))
             i += 1
 
 if __name__ == "__main__":
