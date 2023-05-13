@@ -1,13 +1,18 @@
 #include "OrderBook.hpp"
+#include <pybind11/pybind11.h>
+#include <pybind11/iostream.h>
+namespace py = pybind11;
 
-int main(){
-    OrderBook b(true);
-
-    b.addOrder(1, true, 105, 100);
-    b.addOrder(2, true, 105, 100);
-    b.addOrder(3, true, 105, 100);
-    b.addOrder(4, true, 104, 100);
-    b.addOrder(5, false, 103.5, 399);
-
-    b.printBook();
+PYBIND11_MODULE(orderbook, m) {
+    m.doc() = "pybind11 orderbook";
+    py::class_<OrderBook>(m, "OrderBook")
+        .def(py::init<bool>(), py::arg("verbose"))
+        .def("printBook", &OrderBook::printBook, py::call_guard<py::scoped_ostream_redirect,
+                     py::scoped_estream_redirect>())
+        .def("addOrder", &OrderBook::addOrder, py::arg("uid"), py::arg("side"), py::arg("price"), py::arg("size"), py::call_guard<py::scoped_ostream_redirect,
+                     py::scoped_estream_redirect>())
+        .def("deleteOrder", &OrderBook::deleteOrder, py::arg("uid"), py::call_guard<py::scoped_ostream_redirect,
+                     py::scoped_estream_redirect>())
+        .def("updateOrder", &OrderBook::updateOrder, py::arg("uid"), py::arg("size"), py::call_guard<py::scoped_ostream_redirect,
+                     py::scoped_estream_redirect>());
 }
